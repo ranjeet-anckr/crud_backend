@@ -14,9 +14,6 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.send("Hello Node Api");
 });
-app.get("/signup", (req, res) => {
-  res.send("Hello Node ss  Api");
-});
 
 /* The code `app.post("/product", async (req, res) => { ... })` is defining a route for handling HTTP
 POST requests to the "/product" endpoint. */
@@ -35,22 +32,73 @@ app.get("/product", async (req, res) => {
   try {
     const products = await Product.find({});
     res.status(200).json(products);
-  } catch {
-    console.log(error.message);
+  } catch (error) {
     res.send(500).json({ message: error.message });
   }
 });
 
+/* The code `app.get("/product/:id", async (req, res) => { ... })` is defining a route for handling
+HTTP GET requests to the "/product/:id" endpoint. */
+
 app.get("/product/:id", async (req, res) => {
   try {
     const { id } = req.params;
+
     const product = await Product.findById(id);
-    res.status(200).json(product);
-  } catch {
-    console.log(error.message);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `Product with ID ${id} not found` });
+    } else {
+      res.status(200).json(product);
+    }
+  } catch (error) {
     res.send(500).json({ message: error.message });
   }
 });
+
+/* The code `app.put("/product/:id", async (req, res) => { ... })` is defining a route for handling
+HTTP PUT requests to the "/product/:id" endpoint. */
+app.put("/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(id, req.body);
+
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `Product with ID ${id} not found` });
+    } else {
+      const updatedProduct = await Product.findById(id);
+      return res.status(200).json({
+        product: updatedProduct,
+        message: "Product updated successfully",
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/product/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ message: `Product with ID ${id} not found` });
+    } else {
+      const updatedProduct = await Product.findById(id);
+      return res.status(200).json({
+        message: "Product deleted successfully",
+      });
+    }
+  } catch (error) {
+    res.send(500).json({ message: error.message });
+  }
+});
+
 /* The code `app.post("/signup", async (req, res) => { ... })` is defining a route for handling HTTP
 POST requests to the "/signup" endpoint. */
 app.post("/signup", async (req, res) => {
