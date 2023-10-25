@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const signupSchema = mongoose.Schema(
+const loginSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -16,7 +16,7 @@ const signupSchema = mongoose.Schema(
     },
     contactNo: {
       type: Number,
-      required: false,
+      required: false, // "false" is not necessary here since it's optional by default
     },
   },
   {
