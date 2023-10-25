@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const Signup = require("../models/signupModal");
+const nodemailer = require("nodemailer");
 
 /**
  * The login function checks if a user exists and if the provided password matches, then generates a
@@ -58,10 +59,66 @@ const login = async (req, res) => {
  */
 const signUp = async (req, res) => {
   try {
+    // Create the user account
     const signup = await Signup.create(req.body);
-    res.status(200).json({ signup, message: "Account Created successfully" });
+
+    // Send a welcome email to the user
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "ranjeet.xotiv@gmail.com",
+        pass: "egeigozunododypa",
+      },
+    });
+
+    const mailOptions = {
+      from: "ranjeet.xotiv@gmail.com",
+      to: signup.email,
+      subject: "Welcome to Our Service",
+      html: `
+        <html>
+          <head>
+            <style>
+              /* Define your inline CSS styles here */
+              body {
+                font-family: Arial, sans-serif;
+                background-color: #f2f2f2;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #ffffff;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Welcome to Our Service</h1>
+              <p>Thank you for signing up for our service! We are excited to have you as a member.</p>
+              <p>Your credentials:</p>
+              <ul>
+                <li>Email: ${signup.email}</li>
+                <li>Password: ${signup.password}</li>
+              </ul>
+            </div>
+          </body>
+        </html>
+      `,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Email send error:", error);
+      } else {
+        console.log("Email sent:", info.response);
+      }
+    });
+
+    // Respond with a success message
+    res.status(200).json({ signup, message: "Account created successfully" });
   } catch (error) {
-    res.send(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
