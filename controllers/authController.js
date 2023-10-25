@@ -59,6 +59,12 @@ const login = async (req, res) => {
  */
 const signUp = async (req, res) => {
   try {
+    const { email } = req.body;
+    const existingUser = await Signup.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
     // Create the user account
     const signup = await Signup.create(req.body);
 
@@ -74,7 +80,7 @@ const signUp = async (req, res) => {
     const mailOptions = {
       from: "ranjeet.xotiv@gmail.com",
       to: signup.email,
-      subject: "Welcome to Our Service",
+      subject: "Account Created successfully",
       html: `
         <html>
           <head>
