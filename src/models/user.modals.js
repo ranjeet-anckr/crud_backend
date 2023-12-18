@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const signupSchema = mongoose.Schema(
+const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -8,11 +8,11 @@ const signupSchema = mongoose.Schema(
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Please enter email"],
     },
     password: {
       type: String,
-      required: true,
+      required: [true, "Please enter password"],
       default: 0,
     },
     contactNo: {
@@ -25,6 +25,6 @@ const signupSchema = mongoose.Schema(
   }
 );
 
-const Signup = mongoose.model("Signup", signupSchema);
+const User = mongoose.model("Signup", userSchema);
 
-module.exports = Signup;
+export default User;
