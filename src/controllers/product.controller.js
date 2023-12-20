@@ -6,7 +6,15 @@ const { ObjectId } = Types;
 const getProduct = async (req, res) => {
   try {
     const products = await Product.find({});
-    res.status(200).json(products);
+    const simplifiedProducts = products.map((product) => ({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      categories: product.categories,
+      productImage: product.categories,
+      quantity: product.quantity,
+    }));
+    res.status(200).json(simplifiedProducts);
   } catch (error) {
     res.send(500).json({ message: error.message });
   }

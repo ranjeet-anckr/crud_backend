@@ -2,12 +2,14 @@ import express from "express";
 import cors from "cors"; // Import the cors middleware
 import ProductRoutes from "../src/routes/product.routes.js";
 import UserRoutes from "../src/routes/user.routes.js";
+import Crud from "../src/routes/crud.routes.js";
 
 var app = express();
 
 app.use(express.json());
 
 app.use(cors());
+
 // app.use(
 //     cors({
 //       origin: ["http://localhost:3000"],
@@ -23,6 +25,7 @@ app.get("/", function (req, res) {
 
 app.use("/api", ProductRoutes);
 app.use("/api", UserRoutes);
+app.use("/api", Crud);
 
 app.use(function (err, req, res, next) {
   console.log(err.message);
